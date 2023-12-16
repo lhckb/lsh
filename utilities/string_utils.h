@@ -19,7 +19,7 @@
 /*
  * Prints the current error represented by errno to stderr
 */
-void print_errno_to_standard_error();
+void print_errno_to_standard_error(char* file, int line);
 
 /*
  * @param command String containing command to be broken into an arg list;

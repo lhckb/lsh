@@ -5,8 +5,10 @@
 #include "proc_utils.h"
 #include <stdbool.h>
 
-void print_errno_to_standard_error() {
-  fprintf(stderr, "[ERROR] errno %d\n", errno);
+void print_errno_to_standard_error(char* file, int line) {
+  fprintf(stderr, ANSI_COLOR_RED "[ERROR] Called from:\n");
+  fprintf(stderr, "file: %s | line: %d\n", file, line);
+  fprintf(stderr, "errno %d: ", errno);
   char *err_str = strerror(errno);
   fprintf(stderr, "%s\n", err_str);
 }

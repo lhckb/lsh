@@ -14,6 +14,8 @@
 #include "utilities/proc_utils.h"
 #include <stdbool.h>
 
+#define PWD "PWD"
+
 char style[4] = "seq";
 
 int main(void) {
@@ -23,14 +25,20 @@ int main(void) {
   char *commands[MAX_INPUT / 2 + 1];
   int comm_count;
 
+  char *working_dir = getenv(PWD);
+  if (working_dir == NULL) {
+    fprintf(stderr, ANSI_COLOR_RED "PWD env variable is not defined");
+    exit(EXIT_FAILURE);
+  }
+
   // main loop
   while (true) {
-    
+    fprintf(stdout, ANSI_COLOR_BLUE "%s | " ANSI_COLOR_RESET, working_dir);
     fprintf(stdout, ANSI_COLOR_GREEN "%s> " ANSI_COLOR_RESET, style);
   
     // release buffers for stdout (still dont know why)
     if (fflush(stdout) != 0) {
-      print_errno_to_standard_error();
+      print_errno_to_standard_error(__FILE__, __LINE__);
       exit(EXIT_FAILURE);
     }
 

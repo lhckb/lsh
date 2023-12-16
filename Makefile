@@ -5,3 +5,7 @@ clean:
 	rm lsh
 
 fresh: clean build
+
+hot:
+	make fresh
+	./lsh
