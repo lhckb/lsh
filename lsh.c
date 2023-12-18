@@ -15,6 +15,7 @@
 #include <stdbool.h>
 
 #define PWD "PWD"
+#define LSH "lsh"
 
 char style[4] = "seq";
 
@@ -33,8 +34,10 @@ int main(void) {
 
   // main loop
   while (true) {
-    fprintf(stdout, ANSI_COLOR_BLUE "%s | " ANSI_COLOR_RESET, working_dir);
-    fprintf(stdout, ANSI_COLOR_GREEN "%s> " ANSI_COLOR_RESET, style);
+    fprintf(stdout, ANSI_COLOR_GREEN "%s> " ANSI_COLOR_RESET, LSH);
+    fprintf(stdout, ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET, working_dir);
+    fprintf(stdout, "$ ");
+    // fprintf(stdout, ANSI_COLOR_GREEN "%s> " ANSI_COLOR_RESET, style);
   
     // release buffers for stdout (still dont know why)
     if (fflush(stdout) != 0) {
@@ -44,13 +47,13 @@ int main(void) {
 
     read(STDIN_FILENO, general_input, MAX_INPUT);
 
-    if (strcmp(general_input, "style seq\n") == 0) {
-      strcpy(style, "seq");
-    }
-    else if (strcmp(general_input, "style par\n") == 0) {
-      strcpy(style, "par");
-    }
-    else if (strcmp(general_input, "exit\n") == 0) {
+    // if (strcmp(general_input, "style seq\n") == 0) {
+    //   strcpy(style, "seq");
+    // }
+    // else if (strcmp(general_input, "style par\n") == 0) {
+    //   strcpy(style, "par");
+    // }
+    if (strcmp(general_input, "exit\n") == 0) {
       fprintf(stdout, ANSI_COLOR_CYAN "stopping shell...\n" ANSI_COLOR_RESET);
       exit(EXIT_SUCCESS);
     }
@@ -61,7 +64,8 @@ int main(void) {
         sepparate_command_into_args(commands[i], &command_list[i]);
       }
 
-      strcmp(style, "seq") == 0 ? call_exec_seq(command_list, comm_count) : call_exec_par(command_list, comm_count);
+      // strcmp(style, "seq") == 0 ? call_exec_seq(command_list, comm_count) : call_exec_par(command_list, comm_count);
+      call_exec_seq(command_list, comm_count);
       
       memset(command_list, 0, comm_count);
     }

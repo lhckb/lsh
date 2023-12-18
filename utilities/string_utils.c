@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "string_utils.h"
 #include "proc_utils.h"
 #include <stdbool.h>
@@ -32,20 +33,42 @@ int sepparate_input_into_commands(char *input, char *commands[MAX_INPUT / 2 + 1]
 
 void sepparate_command_into_args(char *command, proc_args *arg_struct) {
   remove_line_breaks(command);
-  char *args[MAX_ARG_SIZE];
+  char *cmd_copy = (char *) malloc(sizeof(char*) * strlen(command));
+  strcpy(cmd_copy, command);
+  char *args[MAX_ARGS];
   int index = 0;
   char *piece;
 
+  // fprintf(stdout, "%s\n", command);
   piece = strtok(command, " ");
   while (piece != NULL) {
-    args[index] = piece;
-    index++;
+    // fprintf(stdout, "%s\n", command);
+
+    if (piece[0] == '\"') {
+      do {
+        strtok(NULL, " ");
+      } while (piece[strlen(piece - 1)] != '\"');
+
+      char string[MAX_ARG_SIZE];
+      extract_strings_in_quotes(cmd_copy, string);
+      strcpy(args[index], string);
+
+      index++;
+    }
+    else {
+      // strcpy(args[index], piece);
+      args[index] = piece;
+      index++;
+    }
+    // fprintf(stdout, "%s\n", piece);
     piece = strtok(NULL, " ");
   }
 
   arg_struct->proc_name = args[0];
   arg_struct->args = args;
   arg_struct->args[index] = NULL;
+
+  free(cmd_copy);
 }
 
 void remove_line_breaks(char *str) {
@@ -54,4 +77,26 @@ void remove_line_breaks(char *str) {
       str[i] = 0;
     }
   }
+}
+
+char* extract_strings_in_quotes(char *full_str, char *res) {
+  int count = 0;
+  // fprintf(stdout, "%s\n", full_str);
+
+  for (int i = 0; i < (int) strlen(full_str); i++) {
+    if (full_str[i] == '\"') {
+      do {
+        // printf("test\n");
+        res[count] = full_str[i];
+        // printf("test2\n");
+        count++;
+        i++;
+      } while (full_str[i] != '\"');
+      res[count++] = '\"';
+      res[count] = '\0';
+      return res;
+    }
+  }
+
+  return NULL;
 }

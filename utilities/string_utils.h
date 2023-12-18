@@ -22,12 +22,15 @@
 void print_errno_to_standard_error(char* file, int line);
 
 /*
+ * Breaks a single command into args. e.g.: "ls . -ah" becomes ["ls", ".", "-ah"] and
+   built into the proc_args struct.
  * @param command String containing command to be broken into an arg list;
  * @param arg_struct Address to the arg struct which will contain the command in question;
 */
 void sepparate_command_into_args(char *command, proc_args *arg_struct);
 
 /*
+ * Breaks the entire input into individual commands separated by ';'.
  * @param input String containing full input passed in to the shell;
  * @param commands Points to the commands matrix which will hold all commands after breaking them down;
  * @return Number of commands on success, 0 on failure
@@ -38,5 +41,12 @@ int sepparate_input_into_commands(char *input, char **commands);
  * @param str String to have \n removed;
 */
 void remove_line_breaks(char *str);
+
+/**
+ * When separating a command into args, the algorithm splits string-like args, which is wrong. 
+   This function gathers string args into a single string.
+ * @param args Is the entire command args list.
+*/
+char* extract_strings_in_quotes(char *full_str, char *res);
 
 #endif

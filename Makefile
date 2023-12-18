@@ -9,3 +9,7 @@ fresh: clean build
 hot:
 	make fresh
 	./lsh
+
+runtest:
+	gcc -o test tester.c
+	./test
